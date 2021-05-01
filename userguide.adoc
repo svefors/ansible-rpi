@@ -5,15 +5,16 @@
 
  . Write Raspbian Lite to the SD Card using Raspberry Pi Imager (https://www.raspberrypi.org/downloads/).
  . Enable SSH by creating the file /Volumes/boot/ssh.
-
-```
+[source, shell script]
+----
 touch /Volumes/boot/ssh
-```
+----
 You may have to pull out the SD Card stick it back in if the Raspberry Pi Imager has unmounted it.
 
 === Copy ssh keys
 Boot your raspberry pi and copy the ssh keys using _ssh-copy-id_:
-```shell script
+[source, shell script]
+----
 ssh-copy-id pi@192.168.0.130
 
 ssh-copy-id pi@192.168.0.131
@@ -21,7 +22,7 @@ ssh-copy-id pi@192.168.0.131
 ssh-copy-id pi@192.168.0.132
 
 ssh-copy-id pi@192.168.0.133
-```
+----
 the default password for pi user is raspberry.
 
 === Setup your environment
@@ -43,34 +44,37 @@ To setup Raspberry pis. This will:
  * Disable WIFI
  * Disable password login, so you hopefully have copied the key earlier...
 
-```
+[source, shell script]
+----
 ansible-playbook playbooks/rpi.yml
-```
+----
 
 To setup K3s leader(s)
 
-```
+[source, shell script]
+----
 ansible-playbook playbooks/k3s-leader.yml
-```
+----
 
 To setup K3s worker(s)
-
-```
+[source, shell script]
+----
 ansible-playbook playbooks/k3s-workers.yml
-```
+----
 
 I found that unplugging the power meant that it sometimes didn't want to boot the OS again or at least not let me login so I created a shutdown playbook.
 
-```
+[source, shell script]
+----
 ansible-playbook playbooks/shutdown.yml
-```
+----
 
 uninstalling
-
-```
+[source, shell script]
+----
 ansible-playbook playbooks/k3s-worker.yml -t k3s:uninstall
 ansible-playbook playbooks/k3s-leader.yml -t k3s:uninstall
-```
+----
 
 ==== References
 I've used the https://github.com/onedr0p/k3s-gitops-arm playbook as a basis for the raspian role.

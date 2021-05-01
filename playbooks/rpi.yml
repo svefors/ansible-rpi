@@ -1,0 +1,13 @@
+---
+
+- hosts: all
+  become: true
+  gather_facts: true
+
+- hosts: raspbian
+  become: True
+  roles:
+    - raspbian
+
+
+

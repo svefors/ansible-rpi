@@ -1,0 +1,5 @@
+=== Welcome!
+
+this repo has some playbooks to setup a Raspberry pi cluster, and k3s.
+
+xref:userguide.adoc[]

@@ -1,0 +1,59 @@
+---
+
+- name: password lock
+  user:
+    name: "pi"
+    password_lock:  true
+  become: yes
+
+- import_tasks: update-packages.yml
+  tags:
+    - rpi:update
+
+- import_tasks: hostname.yml
+  tags:
+    - never
+    - rpi:init
+    - rpi:hostname
+
+- import_tasks: memory.yml
+  tags:
+    - never
+    - rpi:kernel:memory
+    - rpi:kernel
+
+- import_tasks: arm64.yml
+  tags:
+    - never
+    - rpi:kernel:arch
+    - rpi:kernel
+
+- import_tasks: bluetooth.yml
+  tags:
+    - rpi
+    - rpi:bluetooth
+
+- import_tasks: wifi.yml
+  tags:
+    - rpi
+    - rpi:wifi
+
+#I2 Change Timezone
+- name: Change timezone
+  shell: "raspi-config nonint do_change_timezone {{ TIMEZONE }}"
+
+- import_tasks: overclock.yml
+  tags:
+    - never
+    - rpi:kernel
+    - rpi:kernel:overclock
+
+- name: Check if I should Reboot
+  become: True
+  reboot:
+  notify:
+    - wait-for-reboot
+  when: REBOOT|bool
+  tags:
+    - always
+

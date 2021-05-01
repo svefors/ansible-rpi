@@ -1,0 +1,55 @@
+---
+- name: "Get Current Architecture"
+  shell: "uname -m"
+  register: "current_arch"
+
+- name: Print current Architecture
+  debug:
+    msg: "Current Architecture: {{ current_arch.stdout }}"
+
+- name: Enable 64bit Kernal
+  block:
+    - name: Update to Pre-release version
+      shell: "SKIP_WARNING=1 rpi-update"
+    - name: Enable arm_64bit
+      blockinfile:
+        path: /boot/config.txt
+        marker: "# {mark} 64bit"
+        block: |
+          arm_64bit=1
+    - name: Register Reboot
+      set_fact:
+        REBOOT: True
+    - name: Enable required cgroup features and disable IPv6
+      # see https://www.raspberrypi.org/forums/viewtopic.php?t=280656
+      lineinfile:
+        path: /boot/cmdline.txt
+        backrefs: true
+        regexp: '^(.*rootwait)$'
+        line: '\1 ipv6.disable=1 cgroup_memory=1 cgroup_enable=memory'
+        state: present
+  when: arm64
+
+- name: Disable 64bit kernel
+  block:
+    - name: Revert to Pre-release version
+      shell: "rpi-update -y"
+    - name: Disable arm_64bit
+      blockinfile:
+        path: /boot/config.txt
+        marker: "# {mark} 64bit"
+        block: |
+          arm_64bit=0
+    - name: Register Reboot
+      set_fact:
+        REBOOT: True
+
+    - name: Enable required cgroup features and disable IPv6
+      # see https://www.raspberrypi.org/forums/viewtopic.php?t=280656
+      lineinfile:
+        path: /boot/cmdline.txt
+        backrefs: true
+        regexp: '^(.*rootwait)$'
+        line: '\1 ipv6.disable=1 cgroup_memory=1 cgroup_enable=memory'
+        state: present
+  when: not arm64

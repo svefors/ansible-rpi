@@ -1,0 +1,19 @@
+---
+
+- import_tasks: worker-join.yml
+  tags:
+    - k3s
+    - k3s:setup
+    - k3s:worker
+    - k3s:worker:join
+
+- import_tasks: worker-labels.yml
+  tags:
+    - never
+    - k3s:worker:labels
+
+- import_tasks: worker-uninstall.yml
+  tags:
+    - never
+    - k3s:uninstall
+    - k3s:worker:uninstall

@@ -1,0 +1,12 @@
+
+- name: Check if worker is installed
+  stat:
+    path: /usr/local/bin/k3s-agent-uninstall.sh
+  register: k3s_agent
+  changed_when: False
+
+- name: "Uninstall k3s worker"
+  shell: /usr/local/bin/k3s-agent-uninstall.sh
+  become: yes
+  when: k3s_agent.stat.exists
+

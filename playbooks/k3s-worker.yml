@@ -1,0 +1,8 @@
+
+- hosts: worker
+  roles:
+    - role: k3s-worker
+      tags:
+        - "k3s"
+        - "k3s:worker"
+

@@ -1,0 +1,8 @@
+
+MEMSPLIT: "16"
+arm64: True
+WIFI: False
+Bluetooth: False
+TIMEZONE: America/Vancouver
+OVERCLOCK: False
+REBOOT: False

@@ -1,0 +1,29 @@
+---
+#Overclock
+- name: Get overclock
+  shell: "raspi-config nonint get_config_var arm_freq /boot/config.txt"
+  register: pi_overclock
+  changed_when: False
+
+- name: Print overclock
+  debug:
+    msg: "Overclock is: {{ pi_overclock.stdout }}"
+
+- name: Set overclock
+  blockinfile:
+    path: /boot/config.txt
+    marker: "# {mark} ANSIBLE OVERCLOCK"
+    block: |
+      over_voltage=6
+      arm_freq=2000
+  when: not OVERCLOCK|bool
+
+- name: Remove overclock
+  blockinfile:
+    path: /boot/config.txt
+    marker: "# {mark} ANSIBLE OVERCLOCK"
+    state: absent
+  when: not OVERCLOCK|bool
+
+- name: reboot
+  import_tasks: set_REBOOT.yml

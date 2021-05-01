@@ -1,0 +1,76 @@
+== Setup a rpi k3 kluster
+:hide-uri-scheme:
+
+=== SD card setup
+
+ . Write Raspbian Lite to the SD Card using Raspberry Pi Imager (https://www.raspberrypi.org/downloads/).
+ . Enable SSH by creating the file /Volumes/boot/ssh.
+
+```
+touch /Volumes/boot/ssh
+```
+You may have to pull out the SD Card stick it back in if the Raspberry Pi Imager has unmounted it.
+
+=== Copy ssh keys
+Boot your raspberry pi and copy the ssh keys using _ssh-copy-id_:
+```shell script
+ssh-copy-id pi@192.168.0.130
+
+ssh-copy-id pi@192.168.0.131
+
+ssh-copy-id pi@192.168.0.132
+
+ssh-copy-id pi@192.168.0.133
+```
+the default password for pi user is raspberry.
+
+=== Setup your environment
+
+The default ansible configuration file will use the inventory.yml and the roles in the repository.
+
+.ansible.cfg
+[source,INI]
+----
+include::ansible.cfg[]
+----
+
+My inventory is 4 Raspberry Pis that have given fixed IP addresses, in the 192.168.0.13[0:3], but you can modify the link:inventory.yml[].
+
+=== Run playbooks
+
+To setup Raspberry pis. This will:
+
+ * Disable WIFI
+ * Disable password login, so you hopefully have copied the key earlier...
+
+```
+ansible-playbook playbooks/rpi.yml
+```
+
+To setup K3s leader(s)
+
+```
+ansible-playbook playbooks/k3s-leader.yml
+```
+
+To setup K3s worker(s)
+
+```
+ansible-playbook playbooks/k3s-workers.yml
+```
+
+I found that unplugging the power meant that it sometimes didn't want to boot the OS again or at least not let me login so I created a shutdown playbook.
+
+```
+ansible-playbook playbooks/shutdown.yml
+```
+
+uninstalling
+
+```
+ansible-playbook playbooks/k3s-worker.yml -t k3s:uninstall
+ansible-playbook playbooks/k3s-leader.yml -t k3s:uninstall
+```
+
+==== References
+I've used the https://github.com/onedr0p/k3s-gitops-arm playbook as a basis for the raspian role.

@@ -1,0 +1,7 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+    - name: Unconditionally shut down the machine with all defaults
+      community.general.shutdown:

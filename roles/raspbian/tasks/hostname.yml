@@ -1,0 +1,25 @@
+---
+#N1 Hostname
+- name: Get hostname
+  shell: "raspi-config nonint get_hostname"
+  register: pi_hostname
+  changed_when: False
+
+#- name: Print current hostname
+#  debug:
+#    msg: "Current hostname: {{ pi_hostname.stdout }}"
+#
+#- name: Print var hostname
+#  debug:
+#    msg: "var hostname: {{ hostname }}"
+
+- name: Change hostname
+  shell: "raspi-config nonint do_hostname {{ hostname }}"
+  when: pi_hostname.stdout != hostname
+
+- name: reboot
+  import_tasks: set_REBOOT.yml
+
+- name: set REBOOT
+  import_tasks: set_REBOOT.yml
+  when: pi_hostname.stdout != hostname

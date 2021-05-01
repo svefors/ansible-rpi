@@ -1,0 +1,19 @@
+---
+
+- include: leader-install.yml
+  tags:
+    - k3s
+    - k3s:setup
+    - k3s:leader
+    - k3s:leader:install
+
+- import_tasks: leader-uninstall.yml
+  tags:
+    - never
+    - k3s:uninstall
+    - k3s:leader:uninstall
+
+- import_tasks: kubeconfig.yml
+  tags:
+    - never
+    - k3s:kubeconfig

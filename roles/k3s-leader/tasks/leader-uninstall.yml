@@ -1,0 +1,12 @@
+---
+
+- name: Check if leader is installed
+  stat:
+    path: /usr/local/bin/k3s-uninstall.sh
+  register: k3s
+  changed_when: False
+
+- name: Uninstall k3s leader
+  shell: /usr/local/bin/k3s-uninstall.sh
+  become: yes
+  when: k3s.stat.exists

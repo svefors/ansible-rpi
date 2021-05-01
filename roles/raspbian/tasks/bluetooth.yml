@@ -1,0 +1,16 @@
+---
+
+- name: Disable Bluetooth
+  blockinfile:
+    path: /boot/config.txt
+    marker: "# {mark} ANSIBLE DISABLE BLUETOOTH"
+    block: |
+      dtoverlay=pi3-disable-bt
+  when: not Bluetooth|bool
+
+- name: Enable Bluetooth
+  blockinfile:
+    path: /boot/config.txt
+    marker: "# {mark} ANSIBLE DISABLE BLUETOOTH"
+    state: absent
+  when: Bluetooth|bool

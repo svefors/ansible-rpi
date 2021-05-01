@@ -1,0 +1,12 @@
+---
+
+#- name: rm kubeconfig2
+#  shell: "rm kubeconfig2"
+#  delegate_to: 127.0.0.1
+
+- name: setup k3s leader
+  shell: "k3sup install --ip {{ leader_ip }} --user pi --k3s-version {{ k3s_version }} --k3s-extra-args '--no-deploy traefik' --local-path $HOME/.kube/config --context k3s"
+  delegate_to: localhost
+#  when: (not (k3s.stat.exists)) or (k3s.stat.exists and force == True)
+
+#- import_tasks: kubeconfig.yml

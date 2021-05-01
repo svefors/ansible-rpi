@@ -1,0 +1,5 @@
+---
+
+- name: Setup k3s worker
+  shell: "k3sup join --ip {{ inventory_hostname }} --server-ip {{ leader_ip }} --user pi --k3s-version {{ k3s_version }}"
+  delegate_to: localhost

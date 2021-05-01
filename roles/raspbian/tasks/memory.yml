@@ -1,0 +1,23 @@
+---
+#A3 Memory Split
+- block:
+  - name: Get current GPU memory split (1/4)
+    shell: "raspi-config nonint get_config_var gpu_mem /boot/config.txt"
+    register: gpu_mem
+    changed_when: False
+
+  - name: Print current GPU memory split
+    debug:
+      msg: "Current GPU memory split: {{ gpu_mem.stdout }}, MEMSPLIT: {{ MEMSPLIT }} , gpu_mem.stdout != MEMSPLIT :  {{ gpu_mem.stdout != MEMSPLIT }}"
+
+  - name: Set GPU memory split
+    blockinfile:
+      path: /boot/config.txt
+      marker: "# {mark} ANSIBLE THROTTLE GPU"
+      block: |
+        gpu_mem={{ MEMSPLIT }}
+    when: gpu_mem.stdout != MEMSPLIT
+
+
+- name: reboot
+  import_tasks: set_REBOOT.yml

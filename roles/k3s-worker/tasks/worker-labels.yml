@@ -1,0 +1,16 @@
+---
+
+- name: Add Worker Label
+  shell: "kubectl label nodes {{ hostname }} kubernetes.io/role=worker --overwrite"
+  delegate_to: localhost
+
+- name: Remove Label if it exists
+  shell: "kubectl label nodes {{ hostname }} svccontroller.k3s.cattle.io/enablelb-"
+  changed_when: False
+  delegate_to: localhost
+  when:  (enablelb is not defined or enablelb == False)
+
+- name: Enable k3s LoadBalancer
+  shell: "kubectl label nodes {{ hostname }} svccontroller.k3s.cattle.io/enablelb=true kubernetes.io/worker=worker --overwrite"
+  delegate_to: localhost
+  when: (enablelb is defined and enablelb == True)

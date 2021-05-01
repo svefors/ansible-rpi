@@ -1,0 +1,10 @@
+- hosts: leader
+  roles:
+    - role: k3s-leader
+
+
+
+
+#  roles:
+#    - role: k3s
+

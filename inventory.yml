@@ -1,0 +1,29 @@
+all:
+  vars:
+    k3s_version: v1.20.6+k3s1
+    leader_ip: "{{ groups['leader'][0] }}"
+  children:
+    raspbian:
+      hosts:
+        192.168.0.13[0:3]:
+      vars:
+        ansible_user: pi
+    k3s:
+      children:
+        leader:
+          hosts:
+            192.168.0.130:
+              hostname: k3s-leader
+              OVERCLOCK: True
+        worker:
+          hosts:
+            192.168.0.131:
+              hostname: k3s-worker-a
+              OVERCLOCK: True
+            192.168.0.132:
+              hostname: k3s-worker-b
+              enablelb: True # to control where LoadBalancer services are created.
+              OVERCLOCK: True
+            192.168.0.133:
+              hostname: k3s-worker-c
+              OVERCLOCK: True

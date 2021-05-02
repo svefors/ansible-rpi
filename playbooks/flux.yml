@@ -1,0 +1,6 @@
+---
+- name: register kluster in fleet
+  hosts: localhost
+  tasks:
+  - name: register in fleet
+    shell: flux bootstrap github --owner=svefors --context=k3s --repository=fleet-infra --branch=main --path=./klusters/k3s --personal  --personal --network-policy=false
